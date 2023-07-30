@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LinkedIn Post Generator</title>
+</head>
+<body>
+  <h1>LinkedIn Post Generator</h1>
+  <form id="postForm">
+    <label for="postTopic">LinkedIn Post Topic:</label>
+    <input type="text" id="postTopic" required><br>
+
+    <label for="targetOutput">Target Output:</label>
+    <input type="text" id="targetOutput" required><br>
+
+    <label for="daysToRun">Days to Run:</label>
+    <input type="number" id="daysToRun" required><br>
+
+    <label for="audienceType">Target Audience Type:</label>
+    <input type="text" id="audienceType" required><br>
+
+    <button type="submit">Generate Response</button>
+  </form>
+
+  <h2>Generated Response:</h2>
+  <div id="generatedResponse"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const postForm = document.getElementById("postForm");
+    const generatedResponse = document.getElementById("generatedResponse");
+
+    postForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const postTopic = document.getElementById("postTopic").value;
+      const targetOutput = document.getElementById("targetOutput").value;
+      const daysToRun = parseInt(document.getElementById("daysToRun").value);
+      const audienceType = document.getElementById("audienceType").value;
+
+      const openaiApiKey = "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";
+      const apiEndpoint = "https://api.openai.com/v1/engines/text-davinci-002/completions";
+
+      const headers = {
+        "Authorization": `Bearer ${openaiApiKey}`,
+        "Content-Type": "application/json",
+      };
+
+      const inputText = `LinkedIn Post Topic: ${postTopic}\nTarget Output: ${targetOutput}\nDays to Run: ${daysToRun}\nTarget Audience Type: ${audienceType}`;
+
+      try {
+        const response = await axios.post(apiEndpoint, {
+          prompt: inputText,
+          max_tokens: 150, // Adjust this value to control the length of the generated response
+        }, { headers });
+
+        const generatedText = response.data.choices[0].text;
+        generatedResponse.innerText = generatedText;
+      } catch (error) {
+        console.error("An error occurred during response generation:", error);
+        generatedResponse.innerText = "Error generating the response.";
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
